@@ -1,42 +1,76 @@
-import { StatusBar } from 'expo-status-bar';
-import React , {useEffect , useState} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import * as Location from 'expo-location';
-import axios from 'axios'
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View, StatusBar } from "react-native";
+import * as Location from "expo-location";
+import axios from "axios";
+import { useFonts } from "expo-font";
+import WeatherInfo from "./screens/WeatherInfo";
+import { Provider as PaperProvider  , DarkTheme } from "react-native-paper";
+import {defaultTheme , darkTheme} from './Theme';
 
-const base_url = 'https://api.openweathermap.org/data/2.5/weather?'
-const api_key = 'b62a42fe6471ce47e9e440f66772578f'
+const base_url = "https://api.openweathermap.org/data/2.5/weather?";
+const api_key = "b62a42fe6471ce47e9e440f66772578f";
 
 export default function App() {
-  const [errorMessage ,setErrorMassage] = useState(null)
-  const [currentWeather , setCurrentWeather] = useState(null);
-  useEffect(()=>{
-    load();
-  } , [])
+  const [errorMessage, setErrorMassage] = useState(null);
+  const [currentWeather, setCurrentWeather] = useState(null);
+  const [unit, setUnit] = useState("metric");
+  const [isDark , setIsDark] = useState(false);
 
-  const load = async()=>{
+  const [loaded] = useFonts({
+    BYekan: require("./assets/fonts/BYekan.ttf"),
+    IranSans: require("./assets/fonts/IRANSansMobile.ttf"),
+  });
+  useEffect(() => {
+    load();
+  }, []);
+
+  const myTheme = isDark ? darkTheme  : defaultTheme;
+
+  const load = async () => {
     try {
-      let {status} = await Location.requestPermissionsAsync();
-      if(status !== 'granted'){
-        setErrorMassage('برای اجرای برنامه به مکان شما نیاز داریم');
-        return
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        setErrorMassage("برای اجرای برنامه به مکان شما نیاز داریم");
+        return;
       }
       const location = await Location.getCurrentPositionAsync();
-      const {latitude , longitude} = location.coords;
-      console.log(latitude , " , " , longitude )
-      // const res = await fetch(`${base_url}lat=${latitude}&lon=${longitude}&appid=${api_key}`);
-      const res = await axios.get(`${base_url}lat=${latitude}&lon=${longitude}&appid=${api_key}`);
-     
-      console.log(res)
+      const { latitude, longitude } = location.coords;
+      const res = await axios.get(
+        `${base_url}lat=${latitude}&lon=${longitude}&units=${unit}&appid=${api_key}&lang=fa`
+      );
+      if (res.status == 200) {
+        setCurrentWeather(res.data);
+        console.log(res.data);
+      }
+
+      setErrorMassage("مشکلی پیش آمده لطفا بعدا تلاش کنید ");
     } catch (error) {
-      console.log(error);
+      setErrorMassage("مشکلی پیش آمده لطفا بعدا تلاش کنید ");
     }
-   
+  };
+
+  // chek font set
+  if (!loaded) {
+    return null;
   }
+
+  // main screen
+  if (currentWeather) {
+    return (
+      <PaperProvider theme={myTheme}>
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <WeatherInfo currentweather={currentWeather} />
+        </View>
+      </PaperProvider>
+    );
+  }
+
+  // no data screen
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <Text style={styles.text}>{errorMessage}</Text>
     </View>
   );
 }
@@ -44,8 +78,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  },
+  text: {
+    fontFamily: "IranSans",
   },
 });
