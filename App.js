@@ -5,9 +5,9 @@ import { useFonts } from "expo-font";
 import WeatherInfo from "./screens/WeatherInfo";
 import { Provider as PaperProvider   } from "react-native-paper";
 import {defaultTheme , darkTheme} from './Theme';
-import MyPicker from './screens/MyPicker';
 import NetInfo from "@react-native-community/netinfo";
-import RefreshIcon from './screens/RefreshIcon';
+import TopHead from './screens/TopHead';
+import SearchInput from "./screens/SearchInput";
 
 const base_url = "https://api.openweathermap.org/data/2.5/weather?";
 const api_key = "b62a42fe6471ce47e9e440f66772578f";
@@ -16,28 +16,25 @@ export default function App() {
   const [errorMessage, setErrorMassage] = useState(null);
   const [currentWeather, setCurrentWeather] = useState(null);
   const [loading , setLoading] = useState(false);
-  const [unit, setUnit] = useState("metric");
   const [network , setNetwork] = useState(false);
-  const [isDark , setIsDark] = useState(true);
-  const [text , setText] = useState('');
+  const [isDark , setIsDark] = useState(false);
 
   const [loaded] = useFonts({
     BYekan: require("./assets/fonts/BYekan.ttf"),
     IranSans: require("./assets/fonts/IRANSansMobile.ttf"),
   });
-  useEffect(() => {
-
-  }, [unit]);
 
   // network connection
   NetInfo.fetch().then(state => {
     setNetwork(state.isConnected);
   });
 
-  const getSearch =async ()=>{
+  const getSearch =async (text)=>{
+    setLoading(true)
     const res = await axios.get(base_url+`q=${text}&appid=${api_key}&units=metric&lang=fa`)
     console.log(res.data);
     setCurrentWeather(res.data)
+    setLoading(false)
   }
   
 
@@ -68,8 +65,8 @@ export default function App() {
       <PaperProvider theme={myTheme}>
         <View style={styles.container}>
           <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-          <RefreshIcon/>
-          <WeatherInfo currentweather={currentWeather} unit={unit} loading={loading}/>
+          <TopHead/>
+          <WeatherInfo currentweather={currentWeather} loading={loading}/>
         </View>
       </PaperProvider>
     );
@@ -79,11 +76,10 @@ export default function App() {
 
   // no data screen
   return (
-    <View style={styles.container}>
+    <PaperProvider theme={myTheme}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <TextInput value={text} onChangeText={(t)=>setText(t)} placeholder="مکان مورد نظر را وارد کنید " style={styles.myinput}/>
-      <Pressable onPress={getSearch} style={styles.press}><Text style={styles.text}>جستو جو </Text></Pressable>
-    </View>
+       <SearchInput getSearch={getSearch} loading={loading}/>
+    </PaperProvider>
   );
 }
 
@@ -95,21 +91,5 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "IranSans",
   },
-  myinput : {
-    fontFamily : 'IranSans',
-    fontSize : 18,
-    borderWidth : 1,
-    borderColor : 'red',
-    borderRadius : 10,
-    padding : 10,
-    textAlign :'center',
-    margin : 10
-  },
-  press:{
-    padding : 10,
-    backgroundColor : 'red',
-    borderRadius : 10,
-    margin : 10,
-    alignItems:'center'
-  }
+ 
 });

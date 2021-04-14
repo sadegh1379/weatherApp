@@ -6,7 +6,7 @@ import { useTheme } from "react-native-paper";
 
 
 
-export default function WeatherInfo({ currentweather, unit, loading }) {
+export default function WeatherInfo({ currentweather, loading }) {
   const { colors } = useTheme();
   const {
     main: { temp },
