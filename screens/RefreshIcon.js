@@ -3,12 +3,12 @@ import { View, Text , StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import {useTheme} from 'react-native-paper';
 
-export default function RefreshIcon({load}) {
+export default function RefreshIcon() {
     const {colors} = useTheme()
 
     const loadPage = ()=>{
-        // alert('load');
-        load()
+        alert('load');
+        // load()
     }
     return (
         <View style={styles.icon}>

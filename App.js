@@ -35,8 +35,9 @@ export default function App() {
   });
 
   const getSearch =async ()=>{
-    const res = await axios.get(base_url+`q=${text}&appid=${api_key}`)
-    console.log(res);
+    const res = await axios.get(base_url+`q=${text}&appid=${api_key}&units=metric&lang=fa`)
+    console.log(res.data);
+    setCurrentWeather(res.data)
   }
   
 
@@ -67,8 +68,7 @@ export default function App() {
       <PaperProvider theme={myTheme}>
         <View style={styles.container}>
           <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-          <RefreshIcon load={load}/>
-          <MyPicker unit={unit} setUnit={setUnit}/>
+          <RefreshIcon/>
           <WeatherInfo currentweather={currentWeather} unit={unit} loading={loading}/>
         </View>
       </PaperProvider>
