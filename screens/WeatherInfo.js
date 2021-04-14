@@ -30,9 +30,9 @@ export default function WeatherInfo({ currentweather, unit, loading }) {
         <AnimateNumber
           style={[styles.text, { color: "red", fontSize: 40 }]}
           value={temp}
-          timing="easeOut"
+          timing="linear"
           formatter={(val) => {
-            return "" + parseFloat(val).toFixed(1) + "°";
+            return " " + parseFloat(val).toFixed(1) + "°";
           }}
         />
       )}
@@ -42,7 +42,7 @@ export default function WeatherInfo({ currentweather, unit, loading }) {
 
 const styles = StyleSheet.create({
   main: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },

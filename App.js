@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, StatusBar } from "react-native";
-import * as Location from "expo-location";
+import { StyleSheet, Text, View, StatusBar  , TextInput, Pressable } from "react-native";
 import axios from "axios";
 import { useFonts } from "expo-font";
 import WeatherInfo from "./screens/WeatherInfo";
-import { Provider as PaperProvider  , DarkTheme } from "react-native-paper";
+import { Provider as PaperProvider   } from "react-native-paper";
 import {defaultTheme , darkTheme} from './Theme';
 import MyPicker from './screens/MyPicker';
 import NetInfo from "@react-native-community/netinfo";
@@ -19,53 +18,37 @@ export default function App() {
   const [loading , setLoading] = useState(false);
   const [unit, setUnit] = useState("metric");
   const [network , setNetwork] = useState(false);
-  const [isDark , setIsDark] = useState(false);
+  const [isDark , setIsDark] = useState(true);
+  const [text , setText] = useState('');
 
   const [loaded] = useFonts({
     BYekan: require("./assets/fonts/BYekan.ttf"),
     IranSans: require("./assets/fonts/IRANSansMobile.ttf"),
   });
   useEffect(() => {
-    load();
+
   }, [unit]);
 
   // network connection
   NetInfo.fetch().then(state => {
     setNetwork(state.isConnected);
   });
+
+  const getSearch =async ()=>{
+    const res = await axios.get(base_url+`q=${text}&appid=${api_key}`)
+    console.log(res);
+  }
   
 
   const myTheme = isDark ? darkTheme  : defaultTheme;
 
-  const load = async () => {
-    setErrorMassage(null);
-    setLoading(true);
-    try {
-      let { status } = await Location.requestPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMassage("برای اجرای برنامه به مکان شما نیاز داریم");
-        return;
-      }
-      const location = await Location.getCurrentPositionAsync();
-      const { latitude, longitude } = location.coords;
-      const res = await axios.get(
-        `${base_url}lat=${latitude}&lon=${longitude}&units=${unit}&appid=${api_key}&lang=fa`
-      );
-      if (res.status == 200) {
-        setCurrentWeather(res.data);
-        console.log(res.data);
-      }
-
-      setErrorMassage("مشکلی پیش آمده لطفا بعدا تلاش کنید ");
-    } catch (error) {
-      setErrorMassage("مشکلی پیش آمده لطفا بعدا تلاش کنید ");
-    }
-    setLoading(false)
-  };
+ 
 
   // chek font set
   if (!loaded) {
-    return null;
+    return (
+      <View><Text>لطفا صبر کنید ...</Text></View>
+    );
   }
 
    // network
@@ -98,7 +81,8 @@ export default function App() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      <Text style={styles.text}>{errorMessage}</Text>
+      <TextInput value={text} onChangeText={(t)=>setText(t)} placeholder="مکان مورد نظر را وارد کنید " style={styles.myinput}/>
+      <Pressable onPress={getSearch} style={styles.press}><Text style={styles.text}>جستو جو </Text></Pressable>
     </View>
   );
 }
@@ -111,4 +95,21 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: "IranSans",
   },
+  myinput : {
+    fontFamily : 'IranSans',
+    fontSize : 18,
+    borderWidth : 1,
+    borderColor : 'red',
+    borderRadius : 10,
+    padding : 10,
+    textAlign :'center',
+    margin : 10
+  },
+  press:{
+    padding : 10,
+    backgroundColor : 'red',
+    borderRadius : 10,
+    margin : 10,
+    alignItems:'center'
+  }
 });

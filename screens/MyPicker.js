@@ -8,7 +8,7 @@ export default function MyPicker({unit , setUnit}) {
         <View style={styles.pickerstyle}>
              <RNPickerSelect
              
-             style={pickerSelectStyles}
+             
              InputAccessoryView={() => null}
              placeholder={{}}
              value={unit}

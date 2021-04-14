@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@expo/ngrok": "^2.4.3",
     "@react-native-community/netinfo": "^6.0.0",
     "axios": "^0.21.1",
     "expo": "~40.0.0",
