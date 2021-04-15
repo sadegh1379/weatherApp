@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "weatherApp",
-    "slug": "weatherApp",
+    "name": "Dark Sky",
+    "slug": "Dark-Sky",
     "version": "1.0.0",
     "orientation": "portrait",
     "sdkVersion": "38.0.0",
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/mysplash.png",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
@@ -18,15 +18,15 @@
       "**/*"
     ],
     "ios": {
-      "bundleIdentifier": "com.weather.weather",
+      "bundleIdentifier": "com.darksky.darksky",
       "buildNumber": "1.0.0"
     },
     "android": {
-      "package": "com.weather.weather",
+      "package": "com.darksky.darksky",
       "versionCode": 1
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/myicon.png"
     }
   }
 }
