@@ -3,12 +3,14 @@ import { View, Text, StyleSheet, TextInput, Pressable , ImageBackground } from "
 import { useTheme } from "react-native-paper";
 import ALoading from "./Loading";
 
-export default function SearchInput({ getSearch, loading }) {
+export default function SearchInput({ getSearch, loading ,errorMessage }) {
   const { colors } = useTheme();
   const [text, setText] = useState("");
   const image = 'https://media.nationalgeographic.org/assets/photos/000/263/26383.jpg'
 
   const search = () => {
+    if(text == '')
+      return
     getSearch(text);
   };
 
@@ -19,7 +21,7 @@ export default function SearchInput({ getSearch, loading }) {
         styles.container
       }
     >
-        <View style={{ justifyContent: "center"}}>
+        <View style={{ justifyContent: "center" , marginTop : 100}}>
         <TextInput
         value={text}
         onChangeText={(t) => setText(t)}
@@ -27,7 +29,11 @@ export default function SearchInput({ getSearch, loading }) {
         style={styles.myinput}
       />
       <Pressable onPress={search} style={styles.press}>
-        {loading ? <ALoading /> : <Text style={styles.text}>جستو جو </Text>}
+        {
+          errorMessage ? (<Text style={{fontFamily : 'IranSans' , color : 'red'}}>{errorMessage}</Text>) : 
+          loading ? <ALoading /> : <Text style={styles.text}>جستو جو </Text>
+
+        }
       </Pressable>
         </View>
      
@@ -48,6 +54,7 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: "center",
     margin: 10,
+    color : '#fff'
   },
   press: {
     padding: 10,
@@ -59,6 +66,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: "IranSans",
-    fontSize: 12,
+    fontSize: 13,
+    color : '#fff'
   },
 });

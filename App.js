@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, StatusBar  , TextInput, Pressable } from "react-native";
+import { StyleSheet, Text, View, StatusBar  ,Alert } from "react-native";
 import axios from "axios";
 import { useFonts } from "expo-font";
 import WeatherInfo from "./screens/WeatherInfo";
@@ -31,10 +31,20 @@ export default function App() {
 
   const getSearch =async (text)=>{
     setLoading(true)
-    const res = await axios.get(base_url+`q=${text}&appid=${api_key}&units=metric&lang=fa`)
-    console.log(res.data);
-    setCurrentWeather(res.data)
+    try {
+      const res = await axios.get(base_url+`q=${text}&appid=${api_key}&units=metric&lang=fa`)
+      console.log(res.data);
+      setCurrentWeather(res.data)
+    } catch (error) {
+      //  Alert.alert( "جستوجو" , "مکان مورد  نظر پیدا نشد");
+       setErrorMassage('مکان مورد نظر پیدا نشد ');
+       setTimeout(()=>setErrorMassage(null) , 3000)
+    }
     setLoading(false)
+  }
+
+  const clearWeather = ()=>{
+    setCurrentWeather(null)
   }
   
 
@@ -65,8 +75,8 @@ export default function App() {
       <PaperProvider theme={myTheme}>
         <View style={styles.container}>
           <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-          <TopHead/>
-          <WeatherInfo currentweather={currentWeather} loading={loading}/>
+          <TopHead clearWeather={clearWeather}/>
+          <WeatherInfo  currentweather={currentWeather} loading={loading}/>
         </View>
       </PaperProvider>
     );
@@ -78,7 +88,7 @@ export default function App() {
   return (
     <PaperProvider theme={myTheme}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-       <SearchInput getSearch={getSearch} loading={loading}/>
+       <SearchInput errorMessage={errorMessage} getSearch={getSearch} loading={loading}/>
     </PaperProvider>
   );
 }
